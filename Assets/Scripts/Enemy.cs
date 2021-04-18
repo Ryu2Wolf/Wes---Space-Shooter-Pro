@@ -7,25 +7,43 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float _speed = 4.0f;
 
-    // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(0, 6.2f, 0);
-        //var enemyStartPosition = new Vector3(Random.Range)
+        float randomX = Random.Range(-8f, 8f);
+        transform.position = new Vector3(randomX, 6.2f, 0);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //Move down at 4 meters second
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
 
-        //if bottom of screen
-        //respawn at top with a new random x position
         if (transform.position.y < -5f)
         {
             float randomX = Random.Range(-8f, 8f);
             transform.position = new Vector3(randomX, 7f, 0);
+        }
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //Debug.Log("Hit: " + other.transform.name);
+
+        if (other.tag == "Player")
+        {
+            Player player = other.transform.GetComponent<Player>();
+            if (player != null)
+            {
+                player.Damage();
+            }
+
+            Destroy(this.gameObject);
+        }
+
+        if (other.tag == "Laser")
+        {
+            Destroy(other.gameObject);
+            Destroy(this.gameObject);
         }
     }
 }
